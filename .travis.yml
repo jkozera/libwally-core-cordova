@@ -49,6 +49,7 @@ install:
         cd .. &&
         npm i browserify base64-js tape &&
         ./node_modules/.bin/browserify -r ./wallyplugin/wally.js:../wally -r ./libwally-core/src/swig_js/test/test_hash.js:./test_hash www/js/index.js --im > www/js/index_built.js &&
+        cp -r libwally-core/src/swig_js/libwally-core-ios/libwally-core-ios.xcodeproj wallyplugin &&
         cordova prepare ios &&
         NODE_PATH=`pwd`/platforms/ios/cordova/node_modules node patch_pbxproj_with_wally.js > pbxproj.new &&
         cp -r libwally-core/src/* platforms/ios/HelloCordova &&
@@ -95,7 +96,7 @@ script:
            ( socat -u TCP-LISTEN:39742,reuseaddr OPEN:output ) &
            ( tail -f output | while read LOGLINE; do [[ "${LOGLINE}" == "DONE" ]] && (pkill socat; pkill tail); done ) &
         );
-        cordova run ios;
+        cordova run ios &&
         (tail -f ~/Library/Logs/CoreSimulator/*/system.log &) ;
       elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         cordova build android &&
