@@ -33,7 +33,7 @@ sudo: required
 before_install: rm -rf /home/travis/.nvm
 
 install:
-  - git clone https://github.com/jkozera/libwally-core.git -b swig-js
+  - git clone https://github.com/jkozera/libwally-core.git -b wip_js
   - ./libwally-core/tools/travis_install.sh
   # Brew on macOS has up to date SWIG already:
   - bash -c '[ "$TRAVIS_OS_NAME" = "osx" ] || (wget http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz && tar -zxf swig-3.0.12.tar.gz && cd swig-3.0.12 && ./configure && make && sudo make install)'
