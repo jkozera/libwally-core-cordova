@@ -23,7 +23,7 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
     </platform>
-    <plugin name="cordova-plugin-websocket" spec="~0.12.2" />  <!-- needs to be before wally, otherwise SWIFT_* project settings don't work for some reason -->
+    <plugin name="cordova-plugin-file" spec="~4.3.2" /> <!-- needs to be before wally, otherwise SWIFT_* project settings don't work for some reason -->
     <plugin name="cordova-plugin-wally" spec="wallyplugin" />
     <engine name="android" spec="~6.1.2" />
     <engine name="ios" spec="~4.3.1" />

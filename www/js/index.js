@@ -40,22 +40,53 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
-        if (cordova.platformId === 'android') {
-            WebSocket.pluginOptions.override = true;
-        }
-        var ws = new Websock();
-        ws.open(cordova.platformId === 'ios' ? 'ws://localhost:39741' : 'ws://10.0.2.2:39741');
-        ws.on('open', function() {
-            console.log = function(a) {
-	        ws.send_string(a+'\n');
-                if (a.indexOf('1..') === 0) {
-                    // this hack appends DONE line after all tests are executed:
-                    // (FIXME implement in a cleaner way)
-                    setTimeout(function() { ws.send_string('DONE\n'); });
-                }
-	    };
-            require('./test_hash');
-        });
+        if (cordova.platformId === 'ios') {
+            var ws = new Websock();
+            ws.open('ws://localhost:39741');
+            ws.on('open', function() {
+                console.log = function(a) {
+                   ws.send_string(a+'\n');
+                    if (a.indexOf('1..') === 0) {
+                        // this hack appends DONE line after all tests are executed:
+                        // (FIXME implement in a cleaner way)
+                        setTimeout(function() { ws.send_string('DONE\n'); });
+                    }
+                };
+                require('./test_hash');
+            });
+        } else {
+            window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory, function (dirEntry) {
+                dirEntry.getFile('console.log.txt', {create: true, exclusive: false}, function(fileEntry) {
+                    var q = [];
+                    var bytes = 0;
+                    var oldlog = console.log.bind(console);
+                    var flush = function () {
+                        if (q.length === 0) return;
+                        var dataObj = new Blob([q[0]], { type: 'text/plain' });
+                        fileEntry.createWriter(function (fileWriter) {
+                            fileWriter.seek(fileWriter.length);
+                            fileWriter.write(dataObj);
+                            fileWriter.onwriteend = function () {
+                                oldlog(q[0]);
+                                q.shift();
+                                flush();
+                            }
+                            fileWriter.onerror = console.error;
+                        }, console.error);
+                     };
+                     console.log = function(a) {
+                         q.push(a+'\n');
+                         if (q.length === 1) flush();
+                         if (a.indexOf('1..') === 0) {
+                             // this hack appends DONE line after all tests are executed:
+                             // (FIXME implement in a cleaner way)
+                             setTimeout(function() { console.log('DONE\n'); });
+                         }
+                     };
+                     require('./test_hash');
+                 }, console.error);
+             }, console.error);
+         }
     }
 };
 

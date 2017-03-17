@@ -90,24 +90,25 @@ install:
       fi
 
 script:
-  - python websockify/run 39741 localhost:39742 &
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+        python websockify/run 39741 localhost:39742 &
         touch output && (
            ( socat -u TCP-LISTEN:39742,reuseaddr OPEN:output ) &
            ( tail -f output | while read LOGLINE; do [[ "${LOGLINE}" == "DONE" ]] && (pkill socat; pkill tail); done ) &
         );
         cordova run ios &&
-        (tail -f ~/Library/Logs/CoreSimulator/*/system.log &) ;
+        (tail -f ~/Library/Logs/CoreSimulator/*/system.log &) &&
+        (tail -f output || true) &&
+        [[ $(grep ^fail output | wc -l | sed 's. *..') == 0 ]];
       elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         cordova build android &&
         (emulator -avd test -no-audio -no-window &) &&
         android-wait-for-emulator &&
         (adb shell input keyevent 82 &) &&
-        touch output && (
-            nc.traditional -lp 39742 | (while read LOGLINE; do echo $LOGLINE >> output; [[ "${LOGLINE}" == "DONE" ]] && (pkill nc.traditional; pkill tail; pkill adb); done) &
-        ) &&
         (cordova run android &);
-        (adb logcat &);
-      fi &&
-      tail -f output;
-      [[ $(grep ^fail output | wc -l | sed 's. *..') == 0 ]];
+        (
+            adb logcat 2>&1 | (while read LOGLINE; do echo $LOGLINE; (echo $LOGLINE | grep DONE) && (adb pull /data/data/io.cordova.hellocordova/console.log.txt && pkill adb); done)
+        );
+        cat console.log.txt &&
+        [[ $(grep ^fail console.log.txt | wc -l | sed 's. *..') == 0 ]];
+      fi
