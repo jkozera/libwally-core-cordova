@@ -53,6 +53,7 @@ var app = {
                     }
                 };
                 require('./test_hash');
+                require('./test_base58');
             });
         } else {
             window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory, function (dirEntry) {
@@ -84,6 +85,7 @@ var app = {
                          }
                      };
                      require('./test_hash');
+                     require('./test_base58');
                  }, console.error);
              }, console.error);
          }
