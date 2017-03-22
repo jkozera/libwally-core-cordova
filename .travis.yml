@@ -48,7 +48,7 @@ install:
         python ../libwally-core/src/swig_js/makewrappers/wrap.py &&
         cd .. &&
         npm i browserify base64-js tape &&
-        ./node_modules/.bin/browserify -r ./wallyplugin/wally.js:../wally -r ./libwally-core/src/swig_js/test/test_hash.js:./test_hash -r ./libwally-core/src/swig_js/test/test_base58.js:./test_base58 www/js/index.js --im > www/js/index_built.js &&
+        ./node_modules/.bin/browserify -r ./wallyplugin/wally.js:../wally -r ./libwally-core/src/swig_js/test/test_hash.js:./test_hash -r ./libwally-core/src/swig_js/test/test_base58.js:./test_base58 www/js/index.js -r ./libwally-core/src/swig_js/test/test_aes.js:./test_aes --im > www/js/index_built.js &&
         cp -r libwally-core/src/swig_js/libwally-core-ios/libwally-core-ios.xcodeproj wallyplugin &&
         cordova prepare ios &&
         NODE_PATH=`pwd`/platforms/ios/cordova/node_modules node patch_pbxproj_with_wally.js > pbxproj.new &&
@@ -83,7 +83,7 @@ install:
         cd .. &&
         sudo npm i -g browserify &&
         npm i base64-js tape &&
-        browserify -r ./wallyplugin/wally.js:../wally -r ./libwally-core/src/swig_js/test/test_hash.js:./test_hash -r ./libwally-core/src/swig_js/test/test_base58.js:./test_base58 www/js/index.js --im > www/js/index_built.js &&
+        browserify -r ./wallyplugin/wally.js:../wally -r ./libwally-core/src/swig_js/test/test_hash.js:./test_hash -r ./libwally-core/src/swig_js/test/test_base58.js:./test_base58 -r ./libwally-core/src/swig_js/test/test_aes.js:./test_aes www/js/index.js --im > www/js/index_built.js &&
         cp libwally-core/src/swig_java/src/com/blockstream/libwally/Wally.java wallyplugin &&
         cordova prepare android &&
         git clone https://github.com/novnc/websockify.git;
