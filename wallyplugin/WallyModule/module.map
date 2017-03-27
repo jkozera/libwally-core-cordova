@@ -1,4 +1,5 @@
 module Wally [system] {
     header "../../../include/wally_crypto.h"
+    header "../../../include/wally_bip38.h"
     export *
 }

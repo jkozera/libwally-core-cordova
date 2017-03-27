@@ -56,6 +56,7 @@ var app = {
                 require('./test_base58');
                 require('./test_aes');
                 require('./test_scrypt');
+                require('./test_bip38');
             });
         } else {
             window.resolveLocalFileSystemURL(cordova.file.applicationStorageDirectory, function (dirEntry) {
@@ -90,6 +91,7 @@ var app = {
                      require('./test_base58');
                      require('./test_aes');
                      require('./test_scrypt');
+                     require('./test_bip38');
                  }, console.error);
              }, console.error);
          }
