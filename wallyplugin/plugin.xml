@@ -29,6 +29,7 @@
         <source-file src="CDVWally.swift" target-dir="Wally" />
 	<source-file src="libwally-core-ios.xcodeproj" target-dir="" />
 	<source-file src="WallyModule/module.map" target-dir="Wally" />
+	<source-file src="WallyModule/wally_define_javascript_build.h" target-dir="Wally" />
 
         <config-file target="config.xml" parent="/*">
             <feature name="Wally">
